@@ -1,6 +1,6 @@
 const Path = require('path')
 const express = require('express')
-
+const {generateMessage} = require('./utils/message')
 
 var publicPath = Path.join(__dirname,'../public')
 
@@ -13,17 +13,8 @@ app.use(express.static(publicPath))
 io.on('connection', (socket)=>{ // listening to connect a client to server
     console.log('new client connected ');
     
-    socket.emit('AdminMessage',{
-        from:'Admin',
-        text:'wellcome to this chatRoom',
-        createAt:new Date().getTime()
-    })
-
-    socket.broadcast.emit('AdminMessage',{
-        from:'Admin',
-        text:'New User Added to This Room ',
-        createAt:new Date().getTime()
-    })
+    socket.emit('AdminMessage',generateMessage('Admin','wellcome to this chatRoom'))
+    socket.broadcast.emit('AdminMessage',generateMessage('Admin','New User Added to This Room'))
 
     socket.on('createMessage', (message)=> {
         console.log('createMesage:',message);
@@ -46,6 +37,14 @@ io.on('connection', (socket)=>{ // listening to connect a client to server
     socket.on('disconnect',()=>{
         console.log('A Client disconnected ');
     });
+
+    socket.on(
+        'sendMsgCallback',
+        (message , callback )=>{
+           console.log('sendMsgCallback :' , message );
+           callback('callback Message')
+        }
+    )
 
  });
 

@@ -9,6 +9,14 @@ socket.on('connect', function(){ // listening to connection
     //     from:'Andrew',
     //     text:'Yup, that works for me'
     // })
+
+
+    socket.emit(
+        'sendMsgCallback',
+        { text:'this is a message'},
+        function(backData){
+            console.log(backData);
+        })
 });
 
 
