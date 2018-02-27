@@ -10,14 +10,33 @@ var io = require('socket.io')(server);
 app.use(express.static(publicPath))
 
 
-io.on('connection', (client)=>{ 
+io.on('connection', (socket)=>{ // listening to connect a client to server
     console.log('new client connected ');
-    client.on('disconnect',()=>{ console.log('A client disconnected ');});
+
+    socket.on('disconnect',()=>{
+        console.log('A Client disconnected ');
+    });
+
+    socket.emit('newEmail',{
+        from:"erfan@ut.ac.ir",
+        text:"hello this is an Email"
+    })
+
+    socket.on('sendEmail',function (email) {
+        console.log('new email from client',email);
+    })
+
  });
+
+
 
 
  server.listen(3000 , ()=>{
      console.log('server Running On port 3000');
  });
+
+
+
+
 
 
