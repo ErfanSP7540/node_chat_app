@@ -13,14 +13,34 @@ app.use(express.static(publicPath))
 io.on('connection', (socket)=>{ // listening to connect a client to server
     console.log('new client connected ');
     
-    socket.emit('newMessage',{
-        from:"John",
-        text:"see you then",
-        createAt:12312
+    socket.emit('AdminMessage',{
+        from:'Admin',
+        text:'wellcome to this chatRoom',
+        createAt:new Date().getTime()
     })
-    
+
+    socket.broadcast.emit('AdminMessage',{
+        from:'Admin',
+        text:'New User Added to This Room ',
+        createAt:new Date().getTime()
+    })
+
     socket.on('createMessage', (message)=> {
         console.log('createMesage:',message);
+        
+        //// >> emit new message to every client 
+        // io.emit('newMessage',{
+        //         from:message.from,
+        //         text:message.text,
+        //         createAt:new Date().getTime()
+        //     })
+
+        //// > emit new message to every client  except this user
+        // socket.broadcast.emit('newMessage',{
+        //     from:message.from,
+        //     text:message.text,
+        //     createAt:new Date().getTime()
+        // })    
     })
 
     socket.on('disconnect',()=>{
