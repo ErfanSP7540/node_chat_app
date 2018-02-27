@@ -3,20 +3,7 @@ var socket = io();
 
 socket.on('connect', function(){ // listening to connection
     console.log('connect to server')
-    
-    // write below code from console
-    // socket.emit('createMessage', {
-    //     from:'Andrew',
-    //     text:'Yup, that works for me'
-    // })
 
-
-    socket.emit(
-        'sendMsgCallback',
-        { text:'this is a message'},
-        function(backData){
-            console.log(backData);
-        })
 });
 
 
@@ -28,9 +15,14 @@ socket.on('disconnect', function(){// listening to Disconnection
 
 socket.on('newMessage', function(message) {
     console.log('newMesage:',message);
+    $("#messageList .messageListUL")
+    .append('<li><span class="tab">'+message.from +'>>'+ message.text +'</span></li>');
+
 })
 
+jQuery("#sendingForm").submit(function(e){
+    e.preventDefault();
+    console.log(  $( "#sendingForm #formMsg" ).val()     );
 
-socket.on('AdminMessage', function(message) {
-    console.log('newMesage:',message);
-})
+    socket.emit('createMesage', {from:'user',text :$( "#sendingForm #formMsg" ).val()}  )
+});
