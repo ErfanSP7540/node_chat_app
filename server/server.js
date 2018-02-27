@@ -12,19 +12,20 @@ app.use(express.static(publicPath))
 
 io.on('connection', (socket)=>{ // listening to connect a client to server
     console.log('new client connected ');
+    
+    socket.emit('newMessage',{
+        from:"John",
+        text:"see you then",
+        createAt:12312
+    })
+    
+    socket.on('createMessage', (message)=> {
+        console.log('createMesage:',message);
+    })
 
     socket.on('disconnect',()=>{
         console.log('A Client disconnected ');
     });
-
-    socket.emit('newEmail',{
-        from:"erfan@ut.ac.ir",
-        text:"hello this is an Email"
-    })
-
-    socket.on('sendEmail',function (email) {
-        console.log('new email from client',email);
-    })
 
  });
 

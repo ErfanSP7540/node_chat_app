@@ -2,13 +2,13 @@
 var socket = io();
 
 socket.on('connect', function(){ // listening to connection
-     console.log('connect to server')
-
-
-     socket.emit('sendEmail',{
-         to:"hasan@yahoo.com",
-         text:" score for training algorithm"
-     })
+    console.log('connect to server')
+    
+    
+    socket.emit('createMessage', {
+        from:'Andrew',
+        text:'Yup, that works for me'
+    })
 });
 
 
@@ -17,6 +17,8 @@ socket.on('disconnect', function(){// listening to Disconnection
 });
 
 
-socket.on('newEmail',function (email){
-    console.log("new email recieved ... " , email);
+
+socket.on('newMessage', function(message) {
+    console.log('newMesage:',message);
 })
+
