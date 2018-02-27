@@ -3,7 +3,6 @@ var socket = io();
 
 socket.on('connect', function(){ // listening to connection
     console.log('connect to server')
-
 });
 
 
@@ -14,14 +13,14 @@ socket.on('disconnect', function(){// listening to Disconnection
 socket.on('newMessage', function(message) {
     console.log('newMesage:',message);
     $("#messages.chat__messages")
-    .append('<li><span class="tab">'+message.from +'>>'+ message.text +'</span></li>');
+    .append('<li>'+message.from +'  '+ moment(message.createAt).format('LT')  +' >>'+ message.text +'</li>');
 })
 
 
 socket.on('geoLocationMessage', function(message) {
     console.log('geoLocationMessage:',message);
      $("#messages.chat__messages")
-     .append('<li><span class="tab">'+ message.from +'>>  <a href="https://www.google.com/maps/?q='+ message.latitude+','+message.longitude+'" target="_blank">my Locaion </a></span></li>');
+     .append('<li>'+ message.from +' '+ moment(message.createAt).format('LT')  +'  >>  <a href="'+message.url+'" target="_blank">my Locaion </a></li>');
 })
 
 jQuery("#message-form").submit(function(e){

@@ -1,6 +1,6 @@
 const Path = require('path')
 const express = require('express')
-const {generateMessage} = require('./utils/message')
+const {generateMessage ,generateGeolocationMessage} = require('./utils/message')
 
 var publicPath = Path.join(__dirname,'../public')
 
@@ -12,8 +12,9 @@ app.use(express.static(publicPath))
 
 io.on('connection', (socket)=>{ // listening to connect a client to server
     console.log('new client connected ');
-    socket.emit('newMessage',{ from:'Admin', text:'wellcome to chatroom '}) 
-    socket.broadcast.emit('newMessage',{ from:'Admin', text:'new user Added to ChatRoom'})
+    socket.emit('newMessage',generateMessage('Admin','wellcome to this chatRoom')) 
+    socket.broadcast.emit('newMessage',generateMessage('Admin','New User Added to This Room'))
+
     // socket.emit('AdminMessage',generateMessage('Admin','wellcome to this chatRoom'))
     // socket.broadcast.emit('AdminMessage',generateMessage('Admin','New User Added to This Room'))
 
@@ -34,9 +35,9 @@ io.on('connection', (socket)=>{ // listening to connect a client to server
     //        callback('callback Message')
     //     }
     // )
-
+    
     socket.on('createGeolocation',(position , callback)=>{
-        io.emit('geoLocationMessage',position)
+        io.emit('geoLocationMessage',generateGeolocationMessage(position.from , position.latitude , position.longitude) )
         callback()
     })
  });

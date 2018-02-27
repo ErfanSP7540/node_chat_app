@@ -5,11 +5,11 @@
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 300;
     font-size: .95rem;
-    color:red;
   }
   
   ul, li {
     list-style-position: inside;
+    font-size: 1.5rem;
   }
   
   h3 {
