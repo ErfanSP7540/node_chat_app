@@ -17,9 +17,10 @@ io.on('connection', (socket)=>{ // listening to connect a client to server
     // socket.emit('AdminMessage',generateMessage('Admin','wellcome to this chatRoom'))
     // socket.broadcast.emit('AdminMessage',generateMessage('Admin','New User Added to This Room'))
 
-    socket.on('createMesage', (data)=> {
+    socket.on('createMesage', (data,callback)=> {
             console.log('createMesage:',data);
-            io.emit('newMessage',data) 
+            io.emit('newMessage',data)
+            callback(true);
     })
 
     // socket.on('disconnect',()=>{
@@ -34,8 +35,9 @@ io.on('connection', (socket)=>{ // listening to connect a client to server
     //     }
     // )
 
-    socket.on('createGeolocation',(position)=>{
+    socket.on('createGeolocation',(position , callback)=>{
         io.emit('geoLocationMessage',position)
+        callback()
     })
  });
 

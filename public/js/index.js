@@ -13,25 +13,32 @@ socket.on('disconnect', function(){// listening to Disconnection
 
 socket.on('newMessage', function(message) {
     console.log('newMesage:',message);
-    $("#messageList .messageListUL")
+    $("#messages.chat__messages")
     .append('<li><span class="tab">'+message.from +'>>'+ message.text +'</span></li>');
 })
 
 
 socket.on('geoLocationMessage', function(message) {
     console.log('geoLocationMessage:',message);
-     $("#messageList .messageListUL")
+     $("#messages.chat__messages")
      .append('<li><span class="tab">'+ message.from +'>>  <a href="https://www.google.com/maps/?q='+ message.latitude+','+message.longitude+'" target="_blank">my Locaion </a></span></li>');
 })
 
-jQuery("#sendingForm").submit(function(e){
+jQuery("#message-form").submit(function(e){
     e.preventDefault();
-    console.log(  $( "#sendingForm #formMsg" ).val()     );
-
-    socket.emit('createMesage', {from:'user',text :$( "#sendingForm #formMsg" ).val()}  )
+    if($( "#message-form #formMsg" ).val()==""){return}
+    console.log(  $( "#message-form #formMsg" ).val()     );
+    
+    socket.emit( 'createMesage',
+                 {from:'user',text :$( "#message-form #formMsg" ).val()},
+                 function(acceptedOutput){
+                    if(acceptedOutput){  $( "#message-form #formMsg" ).val(""); }
+                })
 });
 
-jQuery("#Geolocation").on('click',function(){
+jQuery("#send-location").on('click',function(){
+    jQuery("#send-location").attr("disabled", "disabled").text('Send Location...')
+
     if (navigator.geolocation) 
     {
         navigator.geolocation.getCurrentPosition(
@@ -39,12 +46,15 @@ jQuery("#Geolocation").on('click',function(){
                 console.log(position);
                 socket.emit('createGeolocation',{   from:'user',
                                                     latitude:position.coords.latitude,
-                                                    longitude:position.coords.longitude})
+                                                    longitude:position.coords.longitude},
+                                                    function(){ jQuery("#send-location").attr("disabled", false).text('Send Location')  } )
             },function(){
                 //console.log('unable to fetch location');
                 socket.emit('createGeolocation',{   from:'user',
                                                     latitude:34.089014,
-                                                    longitude:49.702003})
+                                                    longitude:49.702003},
+                                                    function(){ jQuery("#send-location").attr("disabled", false).text('Send Location')  }
+                                                )
 
             }) 
     } else 
