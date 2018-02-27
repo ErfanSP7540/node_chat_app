@@ -34,6 +34,11 @@ io.on('connection', (socket)=>{ // listening to connect a client to server
     //     }
     // )
 
+    socket.on('createGeolocation',(position)=>{
+        io.emit('newMessage',{from:position.from ,text: "lat:"+position.latitude+"  lng:"+position.longitude})
+    })
+
+
  });
 
 

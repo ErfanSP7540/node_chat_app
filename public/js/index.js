@@ -26,3 +26,22 @@ jQuery("#sendingForm").submit(function(e){
 
     socket.emit('createMesage', {from:'user',text :$( "#sendingForm #formMsg" ).val()}  )
 });
+
+jQuery("#Geolocation").on('click',function(){
+    if (navigator.geolocation) 
+    {
+        navigator.geolocation.getCurrentPosition(
+            function(position){
+                console.log(position);
+                socket.emit('createGeolocation',{   from:'user',
+                                                    latitude:position.coords.latitude,
+                                                    longitude:position.coords.longitude})
+            },function(){
+                console.log('unable to fetch location');
+
+            }) 
+    } else 
+    {
+        console.log("Geolocation is not supported by this browser.");
+    }
+})
