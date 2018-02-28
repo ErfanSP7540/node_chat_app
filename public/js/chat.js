@@ -27,6 +27,7 @@ socket.on('connect', function(){ // listening to connection
 
 socket.on('UpdateUserList', function(users){// listening to Disconnection
     console.log(users)
+    $("#users ol").empty();
 
     users.forEach(element => {
 
