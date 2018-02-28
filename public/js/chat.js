@@ -91,7 +91,7 @@ jQuery("#send-location").on('click',function(){
         navigator.geolocation.getCurrentPosition(
             function(position){
                 console.log(position);
-                socket.emit('createGeolocation',{   from:'user',
+                socket.emit('createGeolocation',{   from:jQuery.deparam(location.search).name,
                                                     latitude:position.coords.latitude,
                                                     longitude:position.coords.longitude},
                                                     function(){ jQuery("#send-location").attr("disabled", false).text('Send Location')  } )
