@@ -1,20 +1,28 @@
 
 function scrollToButton() {
     console.log('scrollToButton..');
-    
 
     var clientHeight = $("#messages").prop('clientHeight')
     var scrollHeight = $("#messages").prop('scrollHeight')
     var scrollTop    = $("#messages").prop('scrollTop')
     $("#messages").scrollTop(scrollHeight-clientHeight)
-    console.log(scrollHeight-clientHeight);
-    
+    console.log(scrollHeight-clientHeight); 
 }
 
 
 var socket = io();
 socket.on('connect', function(){ // listening to connection
     console.log('connect to server')
+
+    var params = jQuery.deparam(location.search)
+    socket.emit('join',params,function(e){
+        if(e){
+            alert('Invalid name and room name ... ');
+            window.location.href="/"
+        }
+    })
+
+
 });
 
 

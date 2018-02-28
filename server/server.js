@@ -40,6 +40,16 @@ io.on('connection', (socket)=>{ // listening to connect a client to server
         io.emit('geoLocationMessage',generateGeolocationMessage(position.from , position.latitude , position.longitude) )
         callback()
     })
+
+    socket.on('join',(params,callback)=>{
+       var { isRealString } = require('./utils/validation')
+       if(  isRealString(params.name) &&   isRealString(params.room)){
+        
+       }else{
+           callback(true)
+       }
+    })
+
  });
 
 
