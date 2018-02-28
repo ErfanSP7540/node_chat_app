@@ -25,6 +25,18 @@ socket.on('connect', function(){ // listening to connection
 
 });
 
+socket.on('UpdateUserList', function(users){// listening to Disconnection
+    console.log(users)
+
+    users.forEach(element => {
+
+        var template = $('#user_template').html();
+        Mustache.parse(template);   // optional, speeds up future uses
+        var rendered = Mustache.render(template, {user:element});
+        $('#users ol').append(rendered);
+    });
+
+});
 
 socket.on('disconnect', function(){// listening to Disconnection
     console.log('Disconnect to server') 
@@ -64,7 +76,7 @@ jQuery("#message-form").submit(function(e){
     console.log(  $( "#message-form #formMsg" ).val()     );
     
     socket.emit( 'createMesage',
-                 {from:'user',text :$( "#message-form #formMsg" ).val()},
+                 {from:jQuery.deparam(location.search).name,text :$( "#message-form #formMsg" ).val()},
                  function(acceptedOutput){
                     if(acceptedOutput){  $( "#message-form #formMsg" ).val(""); }
                 })

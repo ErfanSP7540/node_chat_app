@@ -16,7 +16,7 @@
 
     <div class="chat__sidebar">
         <h3>People</h3>
-        <div id="users"></div>
+        <div id="users"><ol></ol></div>
     </div>
 
     <div class="chat__main">
@@ -49,6 +49,11 @@
             </div>
         </li>        
     </script>
+
+    <script id="user_template" type="x-tmpl-mustache">
+            <li>{{user}}</li>        
+        </script>
+    
 
 
     <script id="location_message_template" type="x-tmpl-mustache">

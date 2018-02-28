@@ -1,6 +1,7 @@
 const Path = require('path')
 const express = require('express')
 const {generateMessage ,generateGeolocationMessage} = require('./utils/message')
+const {Users} = require('./utils/users')
 
 var publicPath = Path.join(__dirname,'../public')
 
@@ -9,49 +10,49 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 app.use(express.static(publicPath))
 
-var NAME;
-var ROOM;
+var users = new Users();
 
 io.on('connection', (socket)=>{ // listening to connect a client to server
     console.log('new client connected ');
 
-    // socket.emit('AdminnMessage',generateMessage('Admin','wellcome to this chatRoom'))
-    // socket.broadcast.emit('AdminMessage',generateMessage('Admin','New User Added to This Room'))
-
-    socket.on('createMesage', (data,callback)=> {
-            console.log('createMesage:',data);
-            io.to(ROOM).emit('newMessage',data)
-            callback(true);
-    })
-
-    // socket.on('disconnect',()=>{
-    //     console.log('A Client disconnected ');
-    // });
-
-    // socket.on(
-    //     'sendMsgCallback',
-    //     (message , callback )=>{
-    //        console.log('sendMsgCallback :' , message );
-    //        callback('callback Message')
-    //     }
-    // )
     
-    socket.on('createGeolocation',(position , callback)=>{
-        io.to(ROOM).emit('geoLocationMessage',generateGeolocationMessage(position.from , position.latitude , position.longitude) )
-        callback()
-    })
-
     socket.on('join',(params,callback)=>{
-       var { isRealString } = require('./utils/validation')
-       if(  isRealString(params.name) &&   isRealString(params.room)){
+
+        var { isRealString } = require('./utils/validation')
+        if(  !isRealString(params.name) ||   !isRealString(params.room)){
+           return  callback(true)
+        }
+
+        users.removeUser(socket.id);
+        users.addUser(socket.id , params.name , params.room );
+        console.log(users.users)
+
 
         socket.join( params.room);
+        io.to(params.room).emit( 'UpdateUserList', users.getUserList(params.room) )
+
+
         socket.emit('newMessage',generateMessage('Admin','wellcome to this chatRoom')) 
-        socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin',`New User Added to ${params.room} Room`))
+        socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin',` ${params.name} entered the  ${params.room} `))
+
+        socket.on('createMesage', (data,callback)=> {
+                console.log('createMesage:',data);
+                io.to(params.room).emit('newMessage',data)
+                callback(true);
+        })
     
-       }else{
-           callback(true)
-       }
+        socket.on('createGeolocation',(position , callback)=>{
+            io.to(params.room).emit('geoLocationMessage',generateGeolocationMessage(position.from , position.latitude , position.longitude) )
+            callback()
+        })
+
+        socket.on('disconnect',()=>{
+            users.removeUser(socket.id);
+            io.to(params.room).emit( 'UpdateUserList', users.getUserList(params.room)  )
+            io.to(params.room).emit( 'newMessage', generateMessage('Admin',` ${params.name} left  Room`)  )
+        })
+
+
     })
 
  });
