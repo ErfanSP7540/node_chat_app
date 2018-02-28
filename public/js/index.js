@@ -1,6 +1,18 @@
 
-var socket = io();
+function scrollToButton() {
+    console.log('scrollToButton..');
+    
 
+    var clientHeight = $("#messages").prop('clientHeight')
+    var scrollHeight = $("#messages").prop('scrollHeight')
+    var scrollTop    = $("#messages").prop('scrollTop')
+    $("#messages").scrollTop(scrollHeight-clientHeight)
+    console.log(scrollHeight-clientHeight);
+    
+}
+
+
+var socket = io();
 socket.on('connect', function(){ // listening to connection
     console.log('connect to server')
 });
@@ -22,10 +34,7 @@ socket.on('newMessage', function(message) {
                                             });
     $('#messages.chat__messages').append(rendered);
 
-    // $("#messages.chat__messages")
-    // .append('<li>'+message.from +'  '+   +' >>'+ message.text +'</li>');
-
-    location_message_template
+    scrollToButton();
 })
 
 
