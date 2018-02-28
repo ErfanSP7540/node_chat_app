@@ -12,15 +12,33 @@ socket.on('disconnect', function(){// listening to Disconnection
 
 socket.on('newMessage', function(message) {
     console.log('newMesage:',message);
-    $("#messages.chat__messages")
-    .append('<li>'+message.from +'  '+ moment(message.createAt).format('LT')  +' >>'+ message.text +'</li>');
+
+    var template = $('#message_template').html();
+    Mustache.parse(template);   // optional, speeds up future uses
+    var rendered = Mustache.render(template, {
+                                                from:message.from,
+                                                text:message.text,
+                                                createAt:moment(message.createAt).format('LT')
+                                            });
+    $('#messages.chat__messages').append(rendered);
+
+    // $("#messages.chat__messages")
+    // .append('<li>'+message.from +'  '+   +' >>'+ message.text +'</li>');
+
+    location_message_template
 })
 
 
 socket.on('geoLocationMessage', function(message) {
-    console.log('geoLocationMessage:',message);
-     $("#messages.chat__messages")
-     .append('<li>'+ message.from +' '+ moment(message.createAt).format('LT')  +'  >>  <a href="'+message.url+'" target="_blank">my Locaion </a></li>');
+
+    var template = $('#location_message_template').html();
+    Mustache.parse(template);   // optional, speeds up future uses
+    var rendered = Mustache.render(template, {
+                                                from:message.from,
+                                                url:message.url,
+                                                createAt:moment(message.createAt).format('LT')
+                                            });
+    $('#messages.chat__messages').append(rendered);
 })
 
 jQuery("#message-form").submit(function(e){
